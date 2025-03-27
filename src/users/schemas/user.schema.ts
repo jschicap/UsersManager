@@ -17,6 +17,8 @@ export type UserDocument = UserModel & Document;
 export class UserModel {
   @Prop({ required: true })
   email: string;
+  @Prop({ required: true })
+  password: string;
 
   @Prop({ required: true })
   name: string;
