@@ -1,13 +1,43 @@
-import { Schema, Document } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 
-export interface User extends Document {
-  id: string;
+export type UserDocument = UserModel & Document;
+
+@Schema({
+  timestamps: true, // Esto añadirá automáticamente createdAt y updatedAt
+  toJSON: {
+    transform: (_, ret) => {
+      ret.id = ret._id.toString();
+      delete ret._id;
+      delete ret.__v;
+      return ret;
+    }
+  }
+})
+export class UserModel {
+  @Prop({ required: true })
   email: string;
-  password: string;
+
+  @Prop({ required: true })
+  name: string;
+
+  @Prop({ default: false })
+  isVerified: boolean;
+
+  @Prop({ default: 'usuario' })
+  role: string;
+
+  @Prop({ required: false })
+    refreshToken?: string;
+  
+  @Prop({ required: false })
+    createdAt: Date;
+
+  @Prop({ required: false })
+    updatedAt: Date;
+  
+  
+
 }
 
-export const UserSchema = new Schema<User>({
-  id: { type: String, required: true },
-  email: { type: String, unique: true, required: true },
-  password: { type: String, required: true },
-});
+export const userSchema = SchemaFactory.createForClass(UserModel);
